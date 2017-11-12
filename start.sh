@@ -1,6 +1,15 @@
 #!/bin/sh
 
-exec /usr/bin/java -Declipse.application=org.eclipse.jdt.ls.core.id1 \
+if [[ "${EUID}" == "" || "${EGID}" == "" ]]; then
+    echo "Environment variable EUID and EGID must be set"
+    exit 1
+fi
+
+addgroup -g ${EGID} dev
+adduser -h ${HOME} -u ${EUID} -s /bin/bash -D -G dev dev
+chown dev:dev /var/run/docker.sock
+
+su-exec dev:dev /usr/bin/java -Declipse.application=org.eclipse.jdt.ls.core.id1 \
      -Dosgi.bundles.defaultStartLevel=4 \
      -Declipse.product=org.eclipse.jdt.ls.core.product \
      -noverify \
