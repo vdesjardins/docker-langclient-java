@@ -6,8 +6,10 @@ if [[ "${EUID}" == "" || "${EGID}" == "" ]]; then
 fi
 
 addgroup -g ${EGID} dev
-adduser -h ${HOME} -u ${EUID} -s /bin/bash -D -G dev dev
-chown dev:dev /var/run/docker.sock
+adduser -u ${EUID} -s /bin/bash -D -G dev dev
+
+chown -R dev:dev /workspace_storage
+chown -R dev:dev /eclipse
 
 su-exec dev:dev /usr/bin/java -Declipse.application=org.eclipse.jdt.ls.core.id1 \
      -Dosgi.bundles.defaultStartLevel=4 \
